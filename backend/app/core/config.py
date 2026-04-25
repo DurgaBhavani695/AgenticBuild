@@ -1,12 +1,21 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Optional
 
 class Settings(BaseSettings):
-    GROQ_API_KEY: str = ""
     LLM_PROVIDER: str = "groq"
-    GROQ_MODEL_NAME: str = "llama3-8b-8192"
+    
+    # Groq Settings (Default)
+    GROQ_API_KEY: str = ""
+    GROQ_MODEL_NAME: str = "openai/gpt-oss-120b"
+    
+    # OpenAI Settings (Optional fallback)
+    OPENAI_API_KEY: str = ""
+    OPENAI_MODEL_NAME: str = "gpt-4o"
+    OPENAI_API_BASE: Optional[str] = None
+    
     SECRET_KEY: str = "fallback-secret-key-change-this"
     DATABASE_URL: str = "sqlite:///./database.db"
-    
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings()

@@ -1,73 +1,59 @@
 # AgenticBuild 🤖
+**Autonomous Full-Stack AI Engineer**
 
-**AgenticBuild** is a high-signal, multi-tenant AI agent platform designed for autonomous software delivery. By leveraging stateful multi-agent orchestration, it transforms natural language requirements into functional, high-performance web applications and standalone scripts.
-
----
-
-## 🚀 Core Features (Elevator Pitch)
-
-### 🧩 LangGraph-Powered Orchestration
-Moving beyond linear LLM chains, AgenticBuild utilizes **LangGraph** to manage complex, stateful AI workflows. This allows for cyclic reasoning, where the agent can analyze, architect, and iterate based on real-time feedback, ensuring superior architectural integrity compared to traditional "one-shot" generators.
-
-### 🛡️ Self-Correcting Execution Engine
-The platform features an autonomous **"Test-and-Repair"** loop. Every generated code block passes through a deterministic validation node. If errors are detected, the graph cycles back to the coder node with detailed error context, attempting self-healing for up to 3 retries before final delivery.
-
-### 👥 Persistent Multi-Tenant Security
-Engineered for scale, AgenticBuild implements robust **JWT-based authentication**. Each user operates within an isolated workspace with persistent project and chat history, powered by a relational SQLite backend via SQLModel.
-
-### 🏗️ Intelligent Project Scaffolding
-Automatically generates full-stack scaffolds including:
-- **Frontend:** Responsive React/Tailwind CSS with GSAP motion design.
-- **Backend:** High-performance FastAPI endpoints.
-- **Preview:** Instant live-view mounting for rapid prototyping.
+AgenticBuild is an AI-native SaaS platform that transforms natural language into production-ready web applications. Unlike traditional "one-shot" generators, it uses **Agentic Loops** to architect, implement, and self-correct code until it works.
 
 ---
 
-## 🛠️ Technical Architecture
-
-### **Backend & API**
-- **FastAPI:** High-performance, asynchronous Python framework for the core API layer.
-- **SQLModel:** Seamless integration of Pydantic and SQLAlchemy for type-safe database interactions and SQLite persistence.
-- **JWT Auth:** Secure, stateless session management for multi-tenant isolation.
-
-### **AI & Orchestration**
-- **LangGraph:** Stateful, directed acyclic graphs (and cycles) for complex agentic reasoning.
-- **LangChain:** Unified interface for LLM interaction and prompt management.
-- **Groq (Llama 3):** Powered by LPU™ Inference Engine for ultra-low latency, high-signal responses.
-
-### **Frontend**
-- **Streamlit:** Modular workspace UI with local storage integration for session persistence.
-- **Live Preview:** Dynamic static file mounting to serve generated assets in real-time.
+## ✨ Key Features
+- **Self-Healing Code Engine**: Implements a recursive "Test-and-Repair" loop. If the generated code has bugs, the agent detects, analyzes, and fixes them autonomously before delivery.
+- **LangGraph Orchestration**: Uses stateful directed acyclic graphs (DAGs) to manage complex multi-step reasoning, ensuring high architectural consistency.
+- **Multi-Tenant Security**: Enterprise-ready architecture with JWT authentication and isolated user workspaces.
+- **Instant Full-Stack Scaffolding**: Generates React/Tailwind frontends and FastAPI backends with live previews in seconds.
 
 ---
 
-## 💎 Showcase / Technical Highlights
+## 🚀 Quick Start
 
-- **Deterministic vs. Agentic:** AgenticBuild bridges the gap between unpredictable AI outputs and deterministic software requirements using structured validation nodes.
-- **Autonomous Developer Pattern:** The system mimics a Senior Engineer's workflow: Analyze -> Architect -> Implement -> Validate -> Deploy.
-- **State Management:** Utilizes annotated state with operator-based merging to track complex project histories across nodes.
-
----
-
-## ⚡ Quick Start
-
-### Prerequisites
-- [uv](https://github.com/astral-sh/uv) (Modern Python package manager)
-- [Groq API Key](https://console.groq.com/)
-
-### Installation & Run
-1. Clone the repository and navigate to the project root.
-2. Create a `.env` file and add your `GROQ_API_KEY`.
-3. Launch the full stack with a single command:
-   ```bash
-   uv run python init_and_run.py
-   ```
-
----
-
-## 🧹 Maintenance
-Reset your workspace and database:
+### 1. Setup Environment
 ```bash
-uv run python clear_db.py
+# Install uv (modern package manager)
+pip install uv
+
+# Sync dependencies
+uv sync
 ```
-*(Warning: This action is destructive and wipes all tenant data.)*
+
+### 2. Configure Credentials
+Create a `.env` file (see `.env.example`):
+```env
+GROQ_API_KEY=your_key_here
+```
+
+### 3. Launch AgenticBuild
+```bash
+uv run python init_and_run.py
+```
+
+---
+
+## 🛠️ Individual Component Execution
+If you prefer to run the services separately:
+
+### **Backend (FastAPI)**
+```bash
+uv run uvicorn backend.app.main:app --reload
+```
+
+### **Frontend (Streamlit)**
+```bash
+uv run streamlit run frontend/app.py
+```
+
+---
+
+## 🏗️ Technical Stack
+- **Backend**: Python 3.14, FastAPI, SQLModel (SQLite), JWT
+- **AI Brain**: LangGraph, LangChain, Groq (openai/gpt-oss-120b)
+- **Frontend**: Streamlit, LocalStorage API
+- **Deployment**: Local live-mounting for instant previews
