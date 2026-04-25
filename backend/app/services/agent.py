@@ -19,6 +19,7 @@ class AgentState(TypedDict):
     summary: str  # User-facing summary of changes
     is_feasible: bool
     feasibility_reason: str
+    feasibility_alternative: str
     retry_count: int
     validation_error: str
     model_name: Optional[str]
@@ -84,7 +85,8 @@ def analyzer_node(state: AgentState):
         "Respond STRICTLY in JSON:\n"
         "{{\n"
         "  \"is_feasible\": true/false,\n"
-        "  \"reason\": \"Brief technical explanation\"\n"
+        "  \"reason\": \"Brief technical explanation\",\n"
+        "  \"alternative\": \"If not feasible, suggest a simpler alternative version of the request\"\n"
         "}}"
     )
     chain = prompt | llm
@@ -95,6 +97,7 @@ def analyzer_node(state: AgentState):
         return {
             "is_feasible": data.get("is_feasible", True),
             "feasibility_reason": data.get("reason", ""),
+            "feasibility_alternative": data.get("alternative", ""),
             "status": "Feasibility check complete."
         }
     
@@ -111,8 +114,13 @@ def route_after_analyzer(state: AgentState):
 def chat_node(state: AgentState):
     if state.get("is_feasible") is False:
         reason = state.get("feasibility_reason", "This project is not feasible with current constraints.")
+        alternative = state.get("feasibility_alternative", "")
+        content = f"### ❌ Project Not Feasible\n\n{reason}"
+        if alternative:
+            content += f"\n\n### 💡 Suggested Alternative\n{alternative}"
+            
         return {
-            "messages": [AIMessage(content=f"### ❌ Project Not Feasible\n\n{reason}")],
+            "messages": [AIMessage(content=content)],
             "status": "Feasibility rejection returned."
         }
 
@@ -243,8 +251,15 @@ def coder_node(state: AgentState):
     existing_context = ""
     if existing_files:
         existing_context = "\n\nEXISTING CODE (Modify these if requested or use as reference):\n"
+        curr_len = 0
+        MAX_CONTEXT_LEN = 25000 # Final safeguard for the prompt
         for path, content in existing_files.items():
-            existing_context += f"--- {path} ---\n{content}\n"
+            if curr_len > MAX_CONTEXT_LEN:
+                existing_context += f"\n... [Further files omitted to stay within context limits] ...\n"
+                break
+            file_block = f"--- {path} ---\n{content}\n"
+            existing_context += file_block
+            curr_len += len(file_block)
 
     error_context = ""
     if validation_error:
@@ -255,21 +270,22 @@ def coder_node(state: AgentState):
             "You are an elite Senior Full-Stack Engineer and Creative Director. You build production-grade, high-impact web applications.\n"
             "TECHNICAL PRINCIPLES:\n"
             "- TOKEN EFFICIENCY: Write concise, high-impact code. Minimize boilerplate. Use standard CSS/Tailwind for effects whenever possible.\n"
-            "- PERFORMANCE FIRST: Prefer GSAP and Tailwind animations. ONLY use Three.js if the request requires true 3D depth or immersive canvas visuals that provide undeniable value.\n"
-            "- STRICT JSON: You respond ONLY with a valid JSON object. Meticulously escape quotes and newlines. Never include markdown code blocks inside JSON values."
+            "- PERFORMANCE FIRST: Prefer GSAP and Tailwind animations. ONLY use Three.js if the request requires true 3D depth or immersive visuals.\n"
+            "- UX EXCELLENCE: Every app must be responsive, accessible (Aria labels), and intuitive. Add hover states, loading states, and smooth transitions.\n"
+            "- ERROR HANDLING: Always include try/catch blocks for API calls and show user-friendly error messages in the UI.\n"
+            "- STRICT JSON: Respond ONLY with a valid JSON object. Meticulously escape quotes and newlines. Never include markdown code blocks inside JSON values."
         )),
         ("human", 
             "GOAL: Generate a professional, high-performance, and visually stunning single-page website.\n\n"
             "### UI/UX REQUIREMENTS:\n"
-            "- Modern, high-end aesthetic (clean glassmorphism, depth, or minimalist dark/light themes).\n"
-            "- Use Tailwind CSS (via CDN) for all styling and utility classes.\n"
-            "- Generous whitespace/padding and responsive layouts.\n"
-            "- Use polished typography (Inter, Poppins, etc. via Google Fonts).\n"
-            "- Smooth GSAP animations for entrance and interaction effects.\n"
+            "- Modern, high-end aesthetic (glassmorphism, depth, or minimalist themes).\n"
+            "- Use Tailwind CSS (via CDN) for all styling. Ensure full responsiveness (Mobile-First).\n"
+            "- Use polished typography (Google Fonts) and consistent spacing.\n"
+            "- Smooth GSAP animations for all entrance and interaction effects.\n"
             "- For true 3D visualizations, utilize Three.js (via CDN) ONLY if it adds significant value.\n"
             "- Ensure the UI fits perfectly within a standard browser viewport.\n\n"
             "### DATA & API REQUIREMENTS:\n"
-            "- Use ONLY free, public APIs that do NOT require authentication (e.g., Open-Meteo, REST Countries).\n"
+            "- Use ONLY free, public APIs (e.g., Open-Meteo, REST Countries). Implement robust error handling for failed requests.\n"
             "- Simulate data with realistic delays if no public API exists.\n\n"
             "### PROJECT CONTEXT:\n"
             "Project: {project_name}\n"
@@ -277,7 +293,7 @@ def coder_node(state: AgentState):
             "{existing_context}{error_context}\n\n"
             "### OUTPUT FORMAT (CRITICAL):\n"
             "Respond ONLY with a valid JSON object containing the relative file paths and their content.\n"
-            "One key MUST be 'summary' containing a structured technical breakdown (Overview, Context, Steps Taken).\n\n"
+            "One key MUST be 'summary' containing a technical breakdown (Overview, Context, Steps Taken).\n\n"
             "Generate content for: {file_paths_to_gen}"
         )
     ])

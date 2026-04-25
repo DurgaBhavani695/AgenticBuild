@@ -51,10 +51,11 @@ async def chat_endpoint(
             if chat_sess.project:
                 project_name = chat_sess.project.name
             
-            # Fetch message history
-            msg_statement = select(ChatMessage).where(ChatMessage.session_id == chat_sess.id).order_by(ChatMessage.created_at)
+            # Fetch message history (Limit to last 10 messages for context efficiency)
+            msg_statement = select(ChatMessage).where(ChatMessage.session_id == chat_sess.id).order_by(desc(ChatMessage.created_at)).limit(10)
             prev_msgs = db.exec(msg_statement).all()
-            for m in prev_msgs:
+            # Reverse because we fetched them in desc order
+            for m in reversed(prev_msgs):
                 if m.role == "user":
                     history.append(HumanMessage(content=m.content))
                 else:
@@ -68,11 +69,24 @@ async def chat_endpoint(
                 project_id = project.id
                 proj_path = os.path.join(PROJECTS_DIR, project_name)
                 if os.path.exists(proj_path):
+                    total_chars = 0
+                    MAX_CHARS = 30000  # Safeguard total context size
                     for root, _, files in os.walk(proj_path):
                         for file in files:
+                            if total_chars > MAX_CHARS: break
+                            
+                            # Only read text-based source files
+                            if not file.endswith(('.html', '.js', '.css', '.py', '.txt', '.md')):
+                                continue
+                                
                             rel_path = os.path.relpath(os.path.join(root, file), proj_path)
                             with open(os.path.join(root, file), "r", encoding="utf-8") as f:
-                                existing_files[rel_path] = f.read()
+                                content = f.read()
+                                # Truncate individual files if they are massive
+                                if len(content) > 10000:
+                                    content = content[:10000] + "... [TRUNCATED]"
+                                existing_files[rel_path] = content
+                                total_chars += len(content)
 
         # 3. Invoke Agent
         inputs = {
