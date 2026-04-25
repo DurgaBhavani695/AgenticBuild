@@ -64,6 +64,11 @@ To transition from a prototype to a production-hardened platform, the following 
 
 ---
 
+## ✨ Future Roadmap (TODO)
+- [ ] **UI Stabilization**: Implement comprehensive UI fixes to tighten up bugs, improve consistency, and enhance the Glassmorphism experience.
+
+---
+
 ## 🏗️ Technical Stack
 - **Backend**: Python 3.14, FastAPI, SQLModel (SQLite), JWT
 - **AI Engine**: LangGraph, LangChain, Groq (OpenAI 120B / Llama 4 / Llama 3.3)
