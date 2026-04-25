@@ -13,6 +13,29 @@ AgenticBuild is an AI-native platform that transforms natural language into prod
 - **Smart Fallback Mechanism**: Automatically pivots from complex multi-file architectures to robust single-file applications if technical constraints (like token limits) are hit.
 - **Feasibility Analysis**: Pre-screens every request to ensure it stays within system capabilities, providing **💡 Suggested Alternatives** for non-feasible tasks.
 
+---
+
+## 🖼️ Visual Gallery
+*Examples of the AgenticBuild workspace and high-fidelity applications generated autonomously.*
+
+<div align="center">
+  <img src="docs/assets/screenshots/screenshot-1.jpeg" width="45%" alt="AgenticBuild Dashboard"/>
+  <img src="docs/assets/screenshots/screenshot-2.jpeg" width="45%" alt="AI Reasoning Process"/>
+</div>
+<div align="center">
+  <img src="docs/assets/screenshots/screenshot-3.jpeg" width="45%" alt="Generated Weather App - Overview"/>
+  <img src="docs/assets/screenshots/screenshot-4.jpeg" width="45%" alt="Generated Weather App - Detail"/>
+</div>
+<div align="center">
+  <img src="docs/assets/screenshots/screenshot-5.jpeg" width="45%" alt="Mobile Responsive View"/>
+  <img src="docs/assets/screenshots/screenshot-6.jpeg" width="45%" alt="Complex 3D Logic Generation"/>
+</div>
+<div align="center">
+  <img src="docs/assets/screenshots/screenshot-7.jpeg" width="91%" alt="Final Product Showcase"/>
+</div>
+
+---
+
 ### 🛠️ Advanced Project Management
 - **Incremental Updates**: Unlike one-shot generators, AgenticBuild understands your existing codebase. You can request updates, add features, or refactor existing projects through conversational dialogue.
 - **Multi-Session Workstreams**: Create and manage multiple concurrent project builds. Switch between different feature branches without losing progress.
