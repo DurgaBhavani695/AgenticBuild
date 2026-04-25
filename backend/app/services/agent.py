@@ -124,9 +124,15 @@ def chat_node(state: AgentState):
     
     messages = state["messages"]
     
-    # If there's an error, inform the LLM so it can explain it
+    # If there's an error, inform the LLM so it can explain it structured as Overview, Context, and Steps
     if validation_error:
-        error_msg = HumanMessage(content=f"System: The attempt to generate code for this project failed after multiple retries. Last error: {validation_error}. Please explain to the user that you had trouble generating valid code and suggest how they might simplify their request.")
+        error_msg = HumanMessage(content=(
+            f"System: The attempt to generate code for this project failed after multiple retries. Last error: {validation_error}.\n"
+            "Please explain the failure to the user using the following structure:\n"
+            "### Overview\n[Brief summary of the failure]\n\n"
+            "### Context\n[Acknowledgment of what was being attempted]\n\n"
+            "### Steps Taken & Blockers\n- [Bullet points of what the agent tried and where it got stuck]"
+        ))
         messages = messages + [error_msg]
     elif context:
         system_msg = HumanMessage(content=f"System: You are assisting with an existing project. Here is a summary of the current files for context (truncated if long):{context}")
@@ -253,10 +259,14 @@ def coder_node(state: AgentState):
         "### OUTPUT FORMAT (CRITICAL):\n"
         "Respond ONLY with a valid JSON object. Do not include conversational filler.\n"
         "Each key must be a relative file path, and the value must be the string content of that file.\n"
+        "One key MUST be 'summary'. The summary must be technical and structured as follows:\n"
+        "1. Overview: A high-level summary of what was achieved.\n"
+        "2. Context: Acknowledgment of the user request and project state.\n"
+        "3. Steps Taken: Bullet points of specific actions (architecting, styling, animation, etc.).\n\n"
         "Example:\n"
         "{{\n"
         "  \"index.html\": \"...FULL HTML CODE...\",\n"
-        "  \"summary\": \"Brief explanation of changes (NON-TECHNICAL, user-facing)\"\n"
+        "  \"summary\": \"### Overview\\n[High-level summary]\\n\\n### Context\\n[Acknowledgment]\\n\\n### Steps Taken\\n- [Step 1]\\n- [Step 2]\"\n"
         "}}\n\n"
         "Generate full content for: {file_paths_to_gen}"
     )
