@@ -128,10 +128,14 @@ def chat_node(state: AgentState):
     if validation_error:
         error_msg = HumanMessage(content=(
             f"System: The attempt to generate code for this project failed after multiple retries. Last error: {validation_error}.\n"
-            "Please explain the failure to the user using the following structure:\n"
-            "### Overview\n[Brief summary of the failure]\n\n"
+            "Please explain the failure to the user and PROVIDE A SIMPLER PROMPT they can use to achieve a similar result.\n\n"
+            "Structure your response as follows:\n"
+            "### ❌ Build Halted\n[Brief summary of the failure]\n\n"
             "### Context\n[Acknowledgment of what was being attempted]\n\n"
-            "### Steps Taken & Blockers\n- [Bullet points of what the agent tried and where it got stuck]"
+            "### Steps Taken & Blockers\n- [Bullet points of blockers]\n\n"
+            "### 💡 Suggested Fix\n"
+            "Try this simplified prompt instead:\n"
+            "> [A specific, simplified version of the user's original prompt that is more likely to succeed]"
         ))
         messages = messages + [error_msg]
     elif context:
@@ -186,9 +190,10 @@ def architect_node(state: AgentState):
 
     prompt = ChatPromptTemplate.from_template(
         "You are a Senior Software Architect. Based on the project name '{project_name}' and the user request: '{description}', "
-        "analyze the requirements and determine the optimal project type.\n\n"
+        "analyze the requirements and determine the optimal project type and file structure.\n\n"
         "GUIDELINES:\n"
         "- Use 'web' for interactive UI, 3D visualizations, dashboards, or any visual application (HTML/JS/Tailwind/Three.js).\n"
+        "- For COMPLEX visual requests (e.g. using Three.js, GSAP, or multiple sections), PREFER splitting into multiple files (index.html, styles.css, script.js) to avoid token limits.\n"
         "- Use 'python' for data processing, automation scripts, or CLI tools.\n"
         "{context_str}\n\n"
         "Respond STRICTLY in JSON format:\n"

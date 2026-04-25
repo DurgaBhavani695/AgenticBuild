@@ -10,7 +10,7 @@ def get_llm():
             api_key=settings.GROQ_API_KEY, 
             model_name=settings.GROQ_MODEL_NAME,
             temperature=0,
-            max_tokens=4096  # Ensure enough room for large HTML files
+            max_tokens=8192  # Increased for complex Three.js/GSAP apps
         )
     elif settings.LLM_PROVIDER.lower() == "openai":
         return ChatOpenAI(
@@ -18,7 +18,7 @@ def get_llm():
             model=settings.OPENAI_MODEL_NAME,
             base_url=settings.OPENAI_API_BASE,
             temperature=0,
-            max_tokens=4096
+            max_tokens=8192
         )
     
     raise ValueError(f"Unsupported LLM provider: {settings.LLM_PROVIDER}")
