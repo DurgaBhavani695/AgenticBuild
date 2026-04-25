@@ -72,7 +72,7 @@ async def chat_endpoint(
             
             if project:
                 project_id = project.id
-                proj_path = os.path.join(PROJECTS_DIR, project_name)
+                proj_path = os.path.join(PROJECTS_DIR, str(current_user.id), project_name)
                 if os.path.exists(proj_path):
                     total_chars = 0
                     MAX_CHARS = 15000  # Lowered safeguard for total context size
@@ -105,10 +105,12 @@ async def chat_endpoint(
             "summary": "",
             "is_feasible": True,
             "feasibility_reason": "",
+            "feasibility_alternative": "",
             "retry_count": 0,
             "validation_error": "",
             "model_name": request.model_name,
-            "use_fallback": False
+            "use_fallback": False,
+            "user_id": current_user.id
         }
         
         result = await agent_app.ainvoke(inputs)
@@ -125,7 +127,7 @@ async def chat_endpoint(
                 db_project = Project(
                     name=res_project_name,
                     project_type=result.get("project_type", "web"),
-                    path=os.path.join(PROJECTS_DIR, res_project_name),
+                    path=os.path.join(PROJECTS_DIR, str(current_user.id), res_project_name),
                     user_id=current_user.id
                 )
                 db.add(db_project)
@@ -152,7 +154,7 @@ async def chat_endpoint(
         final_project_name = res_project_name or project_name
         # Only show preview if an index.html was actually written in this turn
         if final_project_name and "index.html" in generated_files:
-            preview_url = f"http://localhost:8000/view-projects/{final_project_name}/index.html"
+            preview_url = f"http://localhost:8000/view-projects/{current_user.id}/{final_project_name}/index.html"
             
         return ChatResponse(
             response=final_response,
@@ -249,14 +251,14 @@ async def download_project(
     if not project or not os.path.exists(project.path):
         raise HTTPException(status_code=404, detail=f"Project '{project_name}' not found")
     
-    zip_path = os.path.join(PROJECTS_DIR, f"{project_name}.zip")
+    zip_path = os.path.join(PROJECTS_DIR, str(current_user.id), f"{project_name}.zip")
     
     try:
         if os.path.exists(zip_path):
             os.remove(zip_path)
             
         archive_path = shutil.make_archive(
-            base_name=os.path.join(PROJECTS_DIR, project_name), 
+            base_name=os.path.join(PROJECTS_DIR, str(current_user.id), project_name), 
             format='zip', 
             root_dir=project.path
         )
@@ -286,7 +288,7 @@ async def delete_project(
         if os.path.exists(project.path):
             shutil.rmtree(project.path)
             
-        zip_path = os.path.join(PROJECTS_DIR, f"{project_name}.zip")
+        zip_path = os.path.join(PROJECTS_DIR, str(current_user.id), f"{project_name}.zip")
         if os.path.exists(zip_path):
             os.remove(zip_path)
             

@@ -24,6 +24,7 @@ class AgentState(TypedDict):
     validation_error: str
     model_name: Optional[str]
     use_fallback: bool
+    user_id: int
 
 def parse_json_safely(text: str):
     """Robustly extract and parse JSON from LLM response."""
@@ -390,8 +391,9 @@ def route_after_validator(state: AgentState):
 
 def writer_node(state: AgentState):
     project_name = state["project_name"]
+    user_id = state.get("user_id")
     files = state["files"]
-    base_dir = os.path.join("projects", project_name)
+    base_dir = os.path.join("projects", str(user_id), project_name)
     
     os.makedirs(base_dir, exist_ok=True)
     
