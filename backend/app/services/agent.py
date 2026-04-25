@@ -2,7 +2,7 @@ import os
 import json
 import operator
 import re
-from typing import TypedDict, Annotated, List, Dict
+from typing import TypedDict, Annotated, List, Dict, Optional
 from langgraph.graph import StateGraph, START, END
 from langchain_core.messages import HumanMessage, BaseMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate
