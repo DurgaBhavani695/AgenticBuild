@@ -23,7 +23,8 @@ def render_sidebar(api_client):
             "OpenAI 20B (Groq)": "openai/gpt-oss-20b",
             "Llama 3.3 70B (Groq)": "llama-3.3-70b-versatile",
             "Llama 4 Scout 17B (Groq)": "meta-llama/llama-4-scout-17b-16e-instruct",
-            "Groq Compound": "groq/compound"
+            "Groq Compound": "groq/compound",
+            "Groq Compound Mini": "groq/compound-mini"
         }
         
         # Determine default index from backend config if not already set
