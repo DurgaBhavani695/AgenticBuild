@@ -238,38 +238,40 @@ def coder_node(state: AgentState):
     if validation_error:
         error_context = f"\n\nCRITICAL: Your previous attempt failed validation with this error: {validation_error}. PLEASE FIX THIS."
 
-    prompt = ChatPromptTemplate.from_template(
-        "You are an expert Senior Frontend Engineer and Creative Director.\n"
-        "GOAL: Generate a professional, high-performance, and visually stunning single-page website.\n\n"
-        "### UI/UX REQUIREMENTS:\n"
-        "- Modern, high-end aesthetic (clean glassmorphism, depth, or minimalist dark/light themes).\n"
-        "- Use Tailwind CSS (via CDN) for all styling and utility classes.\n"
-        "- Generous whitespace/padding and responsive layouts.\n"
-        "- Use polished typography (Inter, Poppins, etc. via Google Fonts).\n"
-        "- Smooth GSAP animations for all entrance and interaction effects.\n"
-        "- For 3D visualizations or immersive canvas experiences, utilize Three.js (via CDN).\n"
-        "- Ensure the UI fits perfectly within a standard browser viewport.\n\n"
-        "### DATA & API REQUIREMENTS:\n"
-        "- Use ONLY free, public APIs that do NOT require authentication or API keys (e.g., Open-Meteo for weather, REST Countries, etc.).\n"
-        "- If no key-less API exists for a request, simulate data with a realistic local delay.\n\n"
-        "### PROJECT CONTEXT:\n"
-        "Project: {project_name}\n"
-        "Request: {description}\n"
-        "{existing_context}{error_context}\n\n"
-        "### OUTPUT FORMAT (CRITICAL):\n"
-        "Respond ONLY with a valid JSON object. Do not include conversational filler.\n"
-        "Each key must be a relative file path, and the value must be the string content of that file.\n"
-        "One key MUST be 'summary'. The summary must be technical and structured as follows:\n"
-        "1. Overview: A high-level summary of what was achieved.\n"
-        "2. Context: Acknowledgment of the user request and project state.\n"
-        "3. Steps Taken: Bullet points of specific actions (architecting, styling, animation, etc.).\n\n"
-        "Example:\n"
-        "{{\n"
-        "  \"index.html\": \"...FULL HTML CODE...\",\n"
-        "  \"summary\": \"### Overview\\n[High-level summary]\\n\\n### Context\\n[Acknowledgment]\\n\\n### Steps Taken\\n- [Step 1]\\n- [Step 2]\"\n"
-        "}}\n\n"
-        "Generate full content for: {file_paths_to_gen}"
-    )
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", "You are an expert Senior Software Engineer and Creative Director. You respond ONLY with valid JSON. You are meticulous about escaping double quotes and newlines within JSON strings. Never include markdown code blocks (like ```json) inside your JSON values."),
+        ("human", 
+            "GOAL: Generate a professional, high-performance, and visually stunning single-page website.\n\n"
+            "### UI/UX REQUIREMENTS:\n"
+            "- Modern, high-end aesthetic (clean glassmorphism, depth, or minimalist dark/light themes).\n"
+            "- Use Tailwind CSS (via CDN) for all styling and utility classes.\n"
+            "- Generous whitespace/padding and responsive layouts.\n"
+            "- Use polished typography (Inter, Poppins, etc. via Google Fonts).\n"
+            "- Smooth GSAP animations for all entrance and interaction effects.\n"
+            "- For 3D visualizations or immersive canvas experiences, utilize Three.js (via CDN).\n"
+            "- Ensure the UI fits perfectly within a standard browser viewport.\n\n"
+            "### DATA & API REQUIREMENTS:\n"
+            "- Use ONLY free, public APIs that do NOT require authentication or API keys (e.g., Open-Meteo for weather, REST Countries, etc.).\n"
+            "- If no key-less API exists for a request, simulate data with a realistic local delay.\n\n"
+            "### PROJECT CONTEXT:\n"
+            "Project: {project_name}\n"
+            "Request: {description}\n"
+            "{existing_context}{error_context}\n\n"
+            "### OUTPUT FORMAT (CRITICAL):\n"
+            "Respond ONLY with a valid JSON object. Do not include conversational filler.\n"
+            "Each key must be a relative file path, and the value must be the string content of that file.\n"
+            "One key MUST be 'summary'. The summary must be technical and structured as follows:\n"
+            "1. Overview: A high-level summary of what was achieved.\n"
+            "2. Context: Acknowledgment of the user request and project state.\n"
+            "3. Steps Taken: Bullet points of specific actions.\n\n"
+            "Example:\n"
+            "{{\n"
+            "  \"index.html\": \"...FULL HTML CODE...\",\n"
+            "  \"summary\": \"### Overview\\nAchieved X\\n\\n### Context\\nBuilt for Y\\n\\n### Steps Taken\\n- Step 1\"\n"
+            "}}\n\n"
+            "Generate full content for: {file_paths_to_gen}"
+        )
+    ])
     chain = prompt | llm
     response = chain.invoke({
         "file_paths_to_gen": ", ".join(file_paths_to_gen),
@@ -324,7 +326,7 @@ def validator_node(state: AgentState):
 
 def route_after_validator(state: AgentState):
     if state.get("validation_error"):
-        if state.get("retry_count", 0) < 3:
+        if state.get("retry_count", 0) < 5:
             return "coder"
         return "chat"
     return "writer"
