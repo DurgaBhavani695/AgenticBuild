@@ -11,7 +11,7 @@ def get_llm(model_name: str = None):
             api_key=settings.GROQ_API_KEY, 
             model_name=active_model,
             temperature=0,
-            max_tokens=8192
+            max_tokens=4096  # Adjusted to stay within standard TPM limits
         )
     elif provider == "openai":
         active_model = model_name or settings.OPENAI_MODEL_NAME
@@ -20,7 +20,7 @@ def get_llm(model_name: str = None):
             model=active_model,
             base_url=settings.OPENAI_API_BASE,
             temperature=0,
-            max_tokens=8192
+            max_tokens=4096
         )
     
     raise ValueError(f"Unsupported LLM provider: {provider}")
