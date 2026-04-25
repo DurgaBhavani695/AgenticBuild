@@ -4,6 +4,8 @@ class Settings(BaseSettings):
     GROQ_API_KEY: str = ""
     LLM_PROVIDER: str = "groq"
     GROQ_MODEL_NAME: str = "llama3-8b-8192"
+    SECRET_KEY: str = "fallback-secret-key-change-this"
+    DATABASE_URL: str = "sqlite:///./database.db"
     
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="AgenticBuildApp" type="CompoundRunConfigurationType">
+    <toRun name="Backend" type="UvRunConfigurationType" />
+    <toRun name="Frontend" type="UvRunConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>
