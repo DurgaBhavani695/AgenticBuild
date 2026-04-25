@@ -292,7 +292,16 @@ def coder_node(state: AgentState):
     
     data = parse_json_safely(response.content)
     if data:
-        summary = data.pop("summary", "Created/Modified files.")
+        summary_val = data.pop("summary", "Created/Modified files.")
+        
+        # Ensure summary is a string (AI might return a dict if not careful)
+        if isinstance(summary_val, dict):
+            summary = ""
+            for k, v in summary_val.items():
+                summary += f"### {k}\n{v}\n\n"
+        else:
+            summary = str(summary_val)
+
         files_only = {k: v for k, v in data.items() if isinstance(v, str) and k.endswith(('.html', '.js', '.css', '.py', '.txt'))}
         
         return {
