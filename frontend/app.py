@@ -24,30 +24,65 @@ if "active_session_id" not in st.session_state:
 if "mode" not in st.session_state:
     st.session_state.mode = "project"
 
-# --- CSS for better styling ---
+# --- CSS for modern Glassmorphism styling ---
 st.markdown("""
 <style>
-    .stChatMessage { border-radius: 10px; padding: 10px; margin-bottom: 10px; }
-    .stButton button { width: 100%; }
+    /* Global Background and Typography */
+    .main {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #f8fafc;
+    }
     
-    /* Chat message container styling */
+    /* Chat Message Styling */
+    .stChatMessage {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 12px !important;
+        padding: 15px !important;
+        margin-bottom: 15px !important;
+        transition: transform 0.2s ease;
+    }
+    .stChatMessage:hover {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Sidebar Styling */
+    section[data-testid="stSidebar"] {
+        background: rgba(15, 23, 42, 0.95);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Button & Input Styling */
+    .stButton button {
+        border-radius: 8px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        transition: all 0.3s ease !important;
+    }
+    .stButton button:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid #38bdf8 !important;
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    }
+    
+    /* Chat Container */
     .chat-container {
-        max-height: 70vh;
+        max-height: 75vh;
         overflow-y: auto;
         padding: 20px;
-        border-radius: 15px;
-        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.05);
         margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
     }
-    /* Scrollbar styling */
-    .chat-container::-webkit-scrollbar {
-        width: 8px;
-    }
-    .chat-container::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 4px;
+    
+    /* Status Labels */
+    .stStatus {
+        background: rgba(56, 189, 248, 0.05) !important;
+        border: 1px solid rgba(56, 189, 248, 0.2) !important;
+        border-radius: 8px !important;
     }
 </style>
 """, unsafe_allow_html=True)

@@ -144,11 +144,23 @@ def render_sidebar(api_client):
                     
                     details = api_client.get_project_details(p_name)
                     if details:
-                        st.caption("Files:")
+                        st.caption("📄 Files in Project:")
                         st.text("\n".join(details.get("files", [])))
-                        if "index.html" in details.get("files", []):
-                            preview_url = f"http://localhost:8000/view-projects/{p_name}/index.html"
-                            st.link_button("🌐 Open Preview", preview_url, use_container_width=True)
                         
-                        download_url = api_client.get_download_url(p_name)
-                        st.markdown(f"[📥 Download ZIP]({download_url})")
+                        c1, c2 = st.columns(2)
+                        with c1:
+                            if "index.html" in details.get("files", []):
+                                preview_url = f"http://localhost:8000/view-projects/{p_name}/index.html"
+                                st.link_button("🌐 Preview", preview_url, use_container_width=True)
+                        with c2:
+                            # Use binary download for ZIP
+                            zip_data = api_client.download_project(p_name)
+                            if zip_data:
+                                st.download_button(
+                                    label="📥 ZIP",
+                                    data=zip_data,
+                                    file_name=f"{p_name}.zip",
+                                    mime="application/zip",
+                                    use_container_width=True,
+                                    key=f"dl_{sess['id']}"
+                                )

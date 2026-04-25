@@ -121,6 +121,16 @@ class APIClient:
     def get_download_url(self, name):
         return f"{self.base_url}/api/projects/{name}/download"
 
+    def download_project(self, name):
+        url = self.get_download_url(name)
+        try:
+            response = requests.get(url, headers=self._get_headers())
+            if response.status_code == 200:
+                return response.content
+            return None
+        except:
+            return None
+
     def delete_project(self, name):
         try:
             self._make_request("DELETE", f"/api/projects/{name}")
