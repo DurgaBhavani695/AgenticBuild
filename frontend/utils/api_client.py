@@ -41,7 +41,8 @@ class APIClient:
         try:
             response = requests.post(url, json={"email": email, "password": password})
             if response.status_code == 200:
-                return True, "Signup successful. Please login."
+                # On successful signup, immediately log the user in
+                return self.login(email, password)
             else:
                 try:
                     detail = response.json().get("detail", "Signup failed")

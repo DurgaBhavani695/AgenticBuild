@@ -35,8 +35,8 @@ def render_auth_page():
                 else:
                     success, message = api_client.signup(email, password)
                     if success:
-                        st.success(message)
-                        st.info("Now you can switch to Login mode.")
+                        st.success("Account created and logged in successfully!")
+                        st.rerun()
                     else:
                         st.error(message)
             else:
