@@ -23,6 +23,7 @@ class AgentState(TypedDict):
     retry_count: int
     validation_error: str
     model_name: Optional[str]
+    use_fallback: bool
 
 def parse_json_safely(text: str):
     """Robustly extract and parse JSON from LLM response."""
@@ -245,6 +246,13 @@ def coder_node(state: AgentState):
     project_name = state["project_name"]
     project_type = state["project_type"]
     file_paths_to_gen = list(state["files"].keys())
+    use_fallback = state.get("use_fallback", False)
+    
+    # If in fallback mode, override file paths to just index.html
+    if use_fallback:
+        file_paths_to_gen = ["index.html"]
+        project_type = "web"
+
     existing_files = state.get("existing_files", {})
     validation_error = state.get("validation_error", "")
     
@@ -264,6 +272,15 @@ def coder_node(state: AgentState):
     error_context = ""
     if validation_error:
         error_context = f"\n\nCRITICAL: Your previous attempt failed validation with this error: {validation_error}. PLEASE FIX THIS."
+
+    if use_fallback:
+        fallback_instruction = (
+            "\n\n### FALLBACK MODE ENABLED ###\n"
+            "Your previous attempts at a complex multi-file application failed. "
+            "You MUST now provide a SIMPLIFIED, SINGLE-FILE version of the request in 'index.html'. "
+            "Combine all CSS and JS into this one file. Focus on core functionality over excessive visuals."
+        )
+        error_context += fallback_instruction
 
     prompt = ChatPromptTemplate.from_messages([
         ("system", (
@@ -340,23 +357,29 @@ def validator_node(state: AgentState):
     
     # If coder_node already reported an error (like malformed JSON), keep it and increment retry
     if state.get("validation_error"):
-        return {"retry_count": retry_count + 1}
+        # Trigger fallback mode if we are halfway through retries
+        use_fallback = True if retry_count >= 3 else state.get("use_fallback", False)
+        return {"retry_count": retry_count + 1, "use_fallback": use_fallback}
         
     if not files:
+        use_fallback = True if retry_count >= 3 else state.get("use_fallback", False)
         return {
             "retry_count": retry_count + 1,
-            "validation_error": "No files were generated."
+            "validation_error": "No files were generated.",
+            "use_fallback": use_fallback
         }
     
     # Check if all architected files have content
     for path, content in files.items():
         if not content or len(content.strip()) < 20:
+            use_fallback = True if retry_count >= 3 else state.get("use_fallback", False)
             return {
                 "retry_count": retry_count + 1,
-                "validation_error": f"File '{path}' is too short or empty."
+                "validation_error": f"File '{path}' is too short or empty.",
+                "use_fallback": use_fallback
             }
             
-    return {"validation_error": ""}
+    return {"validation_error": "", "use_fallback": state.get("use_fallback", False)}
 
 def route_after_validator(state: AgentState):
     if state.get("validation_error"):

@@ -102,7 +102,8 @@ async def chat_endpoint(
             "feasibility_reason": "",
             "retry_count": 0,
             "validation_error": "",
-            "model_name": request.model_name
+            "model_name": request.model_name,
+            "use_fallback": False
         }
         
         result = await agent_app.ainvoke(inputs)
