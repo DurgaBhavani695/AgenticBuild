@@ -74,15 +74,16 @@ def analyzer_node(state: AgentState):
             break
             
     prompt = ChatPromptTemplate.from_template(
-        "You are a project feasibility analyzer. A user wants to build: '{description}'.\n"
+        "You are an expert Project Feasibility Analyzer and Senior Technical Lead.\n"
+        "A user wants to build: '{description}'.\n\n"
         "System Constraints:\n"
-        "- Can generate single-page HTML/JS/CSS websites (using Tailwind, GSAP, and Three.js for 3D/Canvas rendering).\n"
+        "- Can generate single-page HTML/JS/CSS websites (utilizing Tailwind CSS, GSAP for animations, and Three.js for 3D/Canvas visuals).\n"
         "- Can generate simple standalone Python scripts.\n"
         "- CANNOT generate multi-file backend systems, mobile apps, or complex 3D games.\n\n"
         "Respond STRICTLY in JSON:\n"
         "{{\n"
         "  \"is_feasible\": true/false,\n"
-        "  \"reason\": \"Brief explanation\"\n"
+        "  \"reason\": \"Brief technical explanation\"\n"
         "}}"
     )
     chain = prompt | llm
@@ -189,12 +190,13 @@ def architect_node(state: AgentState):
         context_str = f"\nThis is an UPDATE to an existing project. Existing files: {existing_files_list}"
 
     prompt = ChatPromptTemplate.from_template(
-        "You are a Senior Software Architect. Based on the project name '{project_name}' and the user request: '{description}', "
-        "analyze the requirements and determine the optimal project type and file structure.\n\n"
+        "You are an elite Senior Software Architect and Technical Design Authority. Based on the project name '{project_name}' and user request: '{description}', "
+        "determine the most efficient and impactful architecture.\n\n"
         "GUIDELINES:\n"
-        "- Use 'web' for interactive UI, 3D visualizations, dashboards, or any visual application (HTML/JS/Tailwind/Three.js).\n"
-        "- For COMPLEX visual requests (e.g. using Three.js, GSAP, or multiple sections), PREFER splitting into multiple files (index.html, styles.css, script.js) to avoid token limits.\n"
-        "- Use 'python' for data processing, automation scripts, or CLI tools.\n"
+        "- Use 'web' for interactive UI, dashboards, or visual applications.\n"
+        "- Only include 'three.js' in the file list if the user explicitly requests 3D/immersive elements or if it adds undeniable visual impact that GSAP/Tailwind cannot achieve.\n"
+        "- For COMPLEX visual requests, PREFER splitting into multiple files (index.html, styles.css, script.js) to manage token limits and maintain clean code.\n"
+        "- Use 'python' for data processing, automation scripts, or CLI utilities.\n"
         "{context_str}\n\n"
         "Respond STRICTLY in JSON format:\n"
         "{{\n"
@@ -244,7 +246,13 @@ def coder_node(state: AgentState):
         error_context = f"\n\nCRITICAL: Your previous attempt failed validation with this error: {validation_error}. PLEASE FIX THIS."
 
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are an expert Senior Software Engineer and Creative Director. You respond ONLY with valid JSON. You are meticulous about escaping double quotes and newlines within JSON strings. Never include markdown code blocks (like ```json) inside your JSON values."),
+        ("system", (
+            "You are an elite Senior Full-Stack Engineer and Creative Director. You build production-grade, high-impact web applications.\n"
+            "TECHNICAL PRINCIPLES:\n"
+            "- TOKEN EFFICIENCY: Write concise, high-impact code. Minimize boilerplate. Use standard CSS/Tailwind for effects whenever possible.\n"
+            "- PERFORMANCE FIRST: Prefer GSAP and Tailwind animations. ONLY use Three.js if the request requires true 3D depth or immersive canvas visuals that provide undeniable value.\n"
+            "- STRICT JSON: You respond ONLY with a valid JSON object. Meticulously escape quotes and newlines. Never include markdown code blocks inside JSON values."
+        )),
         ("human", 
             "GOAL: Generate a professional, high-performance, and visually stunning single-page website.\n\n"
             "### UI/UX REQUIREMENTS:\n"
@@ -252,29 +260,20 @@ def coder_node(state: AgentState):
             "- Use Tailwind CSS (via CDN) for all styling and utility classes.\n"
             "- Generous whitespace/padding and responsive layouts.\n"
             "- Use polished typography (Inter, Poppins, etc. via Google Fonts).\n"
-            "- Smooth GSAP animations for all entrance and interaction effects.\n"
-            "- For 3D visualizations or immersive canvas experiences, utilize Three.js (via CDN).\n"
+            "- Smooth GSAP animations for entrance and interaction effects.\n"
+            "- For true 3D visualizations, utilize Three.js (via CDN) ONLY if it adds significant value.\n"
             "- Ensure the UI fits perfectly within a standard browser viewport.\n\n"
             "### DATA & API REQUIREMENTS:\n"
-            "- Use ONLY free, public APIs that do NOT require authentication or API keys (e.g., Open-Meteo for weather, REST Countries, etc.).\n"
-            "- If no key-less API exists for a request, simulate data with a realistic local delay.\n\n"
+            "- Use ONLY free, public APIs that do NOT require authentication (e.g., Open-Meteo, REST Countries).\n"
+            "- Simulate data with realistic delays if no public API exists.\n\n"
             "### PROJECT CONTEXT:\n"
             "Project: {project_name}\n"
             "Request: {description}\n"
             "{existing_context}{error_context}\n\n"
             "### OUTPUT FORMAT (CRITICAL):\n"
-            "Respond ONLY with a valid JSON object. Do not include conversational filler.\n"
-            "Each key must be a relative file path, and the value must be the string content of that file.\n"
-            "One key MUST be 'summary'. The summary must be technical and structured as follows:\n"
-            "1. Overview: A high-level summary of what was achieved.\n"
-            "2. Context: Acknowledgment of the user request and project state.\n"
-            "3. Steps Taken: Bullet points of specific actions.\n\n"
-            "Example:\n"
-            "{{\n"
-            "  \"index.html\": \"...FULL HTML CODE...\",\n"
-            "  \"summary\": \"### Overview\\nAchieved X\\n\\n### Context\\nBuilt for Y\\n\\n### Steps Taken\\n- Step 1\"\n"
-            "}}\n\n"
-            "Generate full content for: {file_paths_to_gen}"
+            "Respond ONLY with a valid JSON object containing the relative file paths and their content.\n"
+            "One key MUST be 'summary' containing a structured technical breakdown (Overview, Context, Steps Taken).\n\n"
+            "Generate content for: {file_paths_to_gen}"
         )
     ])
     chain = prompt | llm
