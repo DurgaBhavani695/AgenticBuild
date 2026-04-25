@@ -15,4 +15,3 @@ dist/
 # Project Specific
 uv.lock
 database.db
-projects/
