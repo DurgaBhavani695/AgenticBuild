@@ -51,6 +51,21 @@ class APIClient:
         except Exception as e:
             return False, f"Connection error: {str(e)}"
 
+    def _handle_response(self, response):
+        if response.status_code == 401:
+            # Clear token if unauthorized
+            st.session_state.token = None
+            st.rerun()
+            
+        if response.status_code == 200:
+            return response.json()
+        else:
+            try:
+                detail = response.json().get("detail", "Request failed")
+            except:
+                detail = f"Request failed (Status {response.status_code})"
+            raise Exception(detail)
+
     def send_chat(self, query, mode, project_name=None, session_id=None):
         url = f"{self.base_url}/api/chat"
         payload = {
@@ -60,16 +75,16 @@ class APIClient:
             "session_id": session_id
         }
         response = requests.post(url, json=payload, headers=self._get_headers())
-        if response.status_code == 200:
-            return response.json()
-        else:
-            raise Exception(response.json().get("detail", "Chat failed"))
+        return self._handle_response(response)
 
     def get_sessions(self):
         url = f"{self.base_url}/api/sessions"
         response = requests.get(url, headers=self._get_headers())
         if response.status_code == 200:
             return response.json()
+        if response.status_code == 401:
+            st.session_state.token = None
+            st.rerun()
         return []
 
     def get_session_messages(self, session_id):
@@ -77,6 +92,9 @@ class APIClient:
         response = requests.get(url, headers=self._get_headers())
         if response.status_code == 200:
             return response.json()
+        if response.status_code == 401:
+            st.session_state.token = None
+            st.rerun()
         return []
 
     def get_projects(self):
@@ -84,6 +102,9 @@ class APIClient:
         response = requests.get(url, headers=self._get_headers())
         if response.status_code == 200:
             return response.json()
+        if response.status_code == 401:
+            st.session_state.token = None
+            st.rerun()
         return []
 
     def get_project_details(self, name):
@@ -91,6 +112,9 @@ class APIClient:
         response = requests.get(url, headers=self._get_headers())
         if response.status_code == 200:
             return response.json()
+        if response.status_code == 401:
+            st.session_state.token = None
+            st.rerun()
         return None
 
     def get_download_url(self, name):
