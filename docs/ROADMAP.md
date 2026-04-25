@@ -1,7 +1,7 @@
 # AgenticBuild: Development Roadmap and Architecture History
 
 ## 1. Project Evolution & History
-AgenticBuild evolved from an initial prototype (practiceAI) into a sophisticated, multi-tenant AI agent platform. The core goal was to move beyond simple chat interfaces to an autonomous developer agent capable of writing, testing, and self-correcting code.
+AgenticBuild evolved from an initial prototype into a sophisticated, multi-tenant AI agent platform. The core goal was to move beyond simple chat interfaces to an autonomous developer agent capable of writing, testing, and self-correcting code.
 
 ### Phase 1: Foundation (v1)
 - **Initial Setup**: Built the core FastAPI backend and Streamlit frontend.
