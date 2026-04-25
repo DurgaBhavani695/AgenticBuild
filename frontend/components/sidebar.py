@@ -8,7 +8,7 @@ def render_sidebar(api_client):
         if st.button("🚪 Logout", use_container_width=True):
             from streamlit_local_storage import LocalStorage
             ls = LocalStorage()
-            ls.removeItem("agenticbuild_token")
+            ls.deleteItem("agenticbuild_token")
             st.session_state.token = None
             st.session_state.messages = []
             st.session_state.active_project = None
