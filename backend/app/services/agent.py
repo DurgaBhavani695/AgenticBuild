@@ -237,6 +237,7 @@ def coder_node(state: AgentState):
         "GOAL: Generate a professional, high-performance, and visually stunning single-page website.\n\n"
         "### UI/UX REQUIREMENTS:\n"
         "- Modern, high-end aesthetic (clean glassmorphism, depth, or minimalist dark/light themes).\n"
+        "- Use Tailwind CSS (via CDN) for all styling and utility classes.\n"
         "- Generous whitespace/padding and responsive layouts.\n"
         "- Use polished typography (Inter, Poppins, etc. via Google Fonts).\n"
         "- Smooth GSAP animations for all entrance and interaction effects.\n"
@@ -291,6 +292,10 @@ def validator_node(state: AgentState):
     files = state.get("files", {})
     retry_count = state.get("retry_count", 0)
     
+    # If coder_node already reported an error (like malformed JSON), keep it and increment retry
+    if state.get("validation_error"):
+        return {"retry_count": retry_count + 1}
+        
     if not files:
         return {
             "retry_count": retry_count + 1,
