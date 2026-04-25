@@ -7,6 +7,7 @@ class ChatRequest(BaseModel):
     mode: str = "chat"  # "chat" or "project"
     project_name: Optional[str] = None
     session_id: Optional[int] = None
+    model_name: Optional[str] = None
 
 class ChatResponse(BaseModel):
     response: str

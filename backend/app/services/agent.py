@@ -21,6 +21,7 @@ class AgentState(TypedDict):
     feasibility_reason: str
     retry_count: int
     validation_error: str
+    model_name: Optional[str]
 
 def parse_json_safely(text: str):
     """Robustly extract and parse JSON from LLM response."""
@@ -66,7 +67,7 @@ def parse_json_safely(text: str):
 
 def analyzer_node(state: AgentState):
     """Assess if the project request is feasible given system constraints."""
-    llm = get_llm()
+    llm = get_llm(state.get("model_name"))
     last_msg = ""
     for m in reversed(state["messages"]):
         if isinstance(m, HumanMessage):
@@ -118,7 +119,7 @@ def chat_node(state: AgentState):
     # If we reached chat_node but there's a validation error, it means retries were exhausted
     validation_error = state.get("validation_error")
     
-    llm = get_llm()
+    llm = get_llm(state.get("model_name"))
     context = ""
     if state.get("existing_files"):
         context = "\n\nContext - Existing Project Files:\n" + "\n".join([f"--- {p} ---\n{c[:500]}..." for p, c in state["existing_files"].items()])
@@ -153,7 +154,7 @@ def namer_node(state: AgentState):
     if state.get("project_name"):
         return {"status": f"Using existing project: {state['project_name']}"}
 
-    llm = get_llm()
+    llm = get_llm(state.get("model_name"))
     last_msg = ""
     for m in reversed(state["messages"]):
         if isinstance(m, HumanMessage):
@@ -179,7 +180,7 @@ def namer_node(state: AgentState):
     }
 
 def architect_node(state: AgentState):
-    llm = get_llm()
+    llm = get_llm(state.get("model_name"))
     last_msg = ""
     for m in reversed(state["messages"]):
         if isinstance(m, HumanMessage):
@@ -226,7 +227,7 @@ def architect_node(state: AgentState):
     }
 
 def coder_node(state: AgentState):
-    llm = get_llm()
+    llm = get_llm(state.get("model_name"))
     last_msg = ""
     for m in reversed(state["messages"]):
         if isinstance(m, HumanMessage):

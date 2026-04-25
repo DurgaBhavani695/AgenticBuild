@@ -42,7 +42,8 @@ def render_chat_interface(api_client):
                         query=prompt,
                         mode=mode,
                         project_name=active_project,
-                        session_id=active_session_id
+                        session_id=active_session_id,
+                        model_name=st.session_state.get("active_model")
                     )
                     
                     content = data["response"]

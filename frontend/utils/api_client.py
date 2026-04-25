@@ -67,13 +67,14 @@ class APIClient:
                 detail = f"Request failed (Status {response.status_code})"
             raise Exception(detail)
 
-    def send_chat(self, query, mode, project_name=None, session_id=None):
+    def send_chat(self, query, mode, project_name=None, session_id=None, model_name=None):
         url = f"{self.base_url}/api/chat"
         payload = {
             "query": query,
             "mode": mode,
             "project_name": project_name,
-            "session_id": session_id
+            "session_id": session_id,
+            "model_name": model_name
         }
         response = requests.post(url, json=payload, headers=self._get_headers())
         return self._handle_response(response)

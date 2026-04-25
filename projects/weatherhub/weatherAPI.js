@@ -1,1 +1,0 @@
-function getWeatherAPI(city) { return fetch(`https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true&hourly=weathercode,temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`) .then(response => response.json()); }

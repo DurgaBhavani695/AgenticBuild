@@ -17,7 +17,23 @@ def render_sidebar(api_client):
 
         st.divider()
 
-        # Mode Selection
+        # Model Selection
+        model_options = {
+            "OpenAI 120B (Groq)": "openai/gpt-oss-120b",
+            "Llama 3 70B (Groq)": "llama3-70b-8192",
+            "Llama 3 8B (Groq)": "llama3-8b-8192",
+            "Mixtral 8x7B (Groq)": "mixtral-8x7b-32768"
+        }
+        selected_model_label = st.selectbox(
+            "🚀 Active Model:",
+            options=list(model_options.keys()),
+            index=0,
+            key="model_selector"
+        )
+        st.session_state.active_model = model_options[selected_model_label]
+        st.caption(f"Currently using: `{st.session_state.active_model}`")
+
+        st.divider()
         app_mode = st.radio(
             "Select Mode:",
             ["💬 Chat", "🏗️ Build Project"],

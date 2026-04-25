@@ -2,23 +2,25 @@ from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI
 from ..core.config import settings
 
-def get_llm():
-    if settings.LLM_PROVIDER.lower() == "groq":
-        # Many users use OpenAI-compatible endpoints on Groq
-        # This factory supports both native Groq and OpenAI-compatible versions
+def get_llm(model_name: str = None):
+    provider = settings.LLM_PROVIDER.lower()
+    
+    if provider == "groq":
+        active_model = model_name or settings.GROQ_MODEL_NAME
         return ChatGroq(
             api_key=settings.GROQ_API_KEY, 
-            model_name=settings.GROQ_MODEL_NAME,
+            model_name=active_model,
             temperature=0,
-            max_tokens=8192  # Increased for complex Three.js/GSAP apps
+            max_tokens=8192
         )
-    elif settings.LLM_PROVIDER.lower() == "openai":
+    elif provider == "openai":
+        active_model = model_name or settings.OPENAI_MODEL_NAME
         return ChatOpenAI(
             api_key=settings.OPENAI_API_KEY,
-            model=settings.OPENAI_MODEL_NAME,
+            model=active_model,
             base_url=settings.OPENAI_API_BASE,
             temperature=0,
             max_tokens=8192
         )
     
-    raise ValueError(f"Unsupported LLM provider: {settings.LLM_PROVIDER}")
+    raise ValueError(f"Unsupported LLM provider: {provider}")
