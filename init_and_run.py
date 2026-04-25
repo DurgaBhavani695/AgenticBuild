@@ -34,7 +34,7 @@ def main():
     create_env_file()
     run_uv_sync()
 
-    print("--- Starting PracticeAI ---")
+    print("--- Starting AgenticBuild ---")
     
     # Start Backend
     backend_proc = subprocess.Popen(
@@ -53,7 +53,7 @@ def main():
     )
 
     def signal_handler(sig, frame):
-        print("\nStopping PracticeAI...")
+        print("\nStopping AgenticBuild...")
         backend_proc.terminate()
         frontend_proc.terminate()
         sys.exit(0)

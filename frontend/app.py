@@ -5,7 +5,7 @@ from frontend.components.auth_ui import render_auth_page
 from frontend.components.sidebar import render_sidebar
 from frontend.components.chat_ui import render_chat_interface
 
-st.set_page_config(page_title="PracticeAI", layout="wide", page_icon="🤖")
+st.set_page_config(page_title="AgenticBuild", layout="wide", page_icon="🤖")
 
 # Initialize LocalStorage
 local_storage = LocalStorage()
@@ -15,7 +15,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 if "token" not in st.session_state:
     # Check local storage for existing token on startup
-    saved_token = local_storage.getItem("practiceai_token")
+    saved_token = local_storage.getItem("agenticbuild_token")
     st.session_state.token = saved_token
 if "active_project" not in st.session_state:
     st.session_state.active_project = None
@@ -57,7 +57,7 @@ def main():
     
     # Sync token from session_state to local_storage if it was just set (e.g. after login)
     if st.session_state.token:
-        local_storage.setItem("practiceai_token", st.session_state.token)
+        local_storage.setItem("agenticbuild_token", st.session_state.token)
     
     if not st.session_state.token:
         render_auth_page()

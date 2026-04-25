@@ -1,10 +1,10 @@
 # GEMINI.md - Project Context
 
-This file provides instructional context for Gemini CLI interactions within the `practiceAI` project.
+This file provides instructional context for Gemini CLI interactions within the `AgenticBuild` project.
 
 ## Project Overview
 
-**Project Name:** practiceAI
+**Project Name:** AgenticBuild
 **Type:** Agentic AI SaaS (v3)
 **Primary Technology:** Python (>= 3.14), FastAPI, SQLModel (SQLite), Streamlit, LangChain, LangGraph, Groq.
 
