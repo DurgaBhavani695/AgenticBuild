@@ -78,6 +78,12 @@ class APIClient:
         except Exception as e:
             raise e
 
+    def get_config(self):
+        try:
+            return self._make_request("GET", "/api/config")
+        except:
+            return None
+
     def send_chat(self, query, mode, project_name=None, session_id=None, model_name=None):
         payload = {
             "query": query,

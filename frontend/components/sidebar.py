@@ -24,13 +24,33 @@ def render_sidebar(api_client):
             "Llama 3 8B (Groq)": "llama3-8b-8192",
             "Mixtral 8x7B (Groq)": "mixtral-8x7b-32768"
         }
+        
+        # Determine default index from backend config if not already set
+        if "active_model" not in st.session_state:
+            config = api_client.get_config()
+            default_model = config.get("default_model") if config else "openai/gpt-oss-120b"
+            
+            # Find matching index
+            default_index = 0
+            for i, (label, val) in enumerate(model_options.items()):
+                if val == default_model:
+                    default_index = i
+                    break
+            st.session_state.active_model = default_model
+            st.session_state.model_index = default_index
+        else:
+            # Keep existing index if user already manually selected something
+            default_index = st.session_state.get("model_index", 0)
+
         selected_model_label = st.selectbox(
             "🚀 Active Model:",
             options=list(model_options.keys()),
-            index=0,
+            index=default_index,
             key="model_selector"
         )
         st.session_state.active_model = model_options[selected_model_label]
+        # Store index to preserve selection across reruns
+        st.session_state.model_index = list(model_options.keys()).index(selected_model_label)
         st.caption(f"Currently using: `{st.session_state.active_model}`")
 
         st.divider()

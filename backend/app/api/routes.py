@@ -12,10 +12,20 @@ from ..services.agent import agent_app
 from ..core.auth_utils import get_current_user
 from langchain_core.messages import HumanMessage, AIMessage
 
+from ..core.config import settings
+
 router = APIRouter()
 
 # Projects folder is at the project root
 PROJECTS_DIR = "projects"
+
+@router.get("/config")
+async def get_config():
+    """Returns the current system default model and provider."""
+    return {
+        "llm_provider": settings.LLM_PROVIDER,
+        "default_model": settings.GROQ_MODEL_NAME if settings.LLM_PROVIDER == "groq" else settings.OPENAI_MODEL_NAME
+    }
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(
