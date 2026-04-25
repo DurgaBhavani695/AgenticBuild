@@ -9,7 +9,7 @@ AgenticBuild is an AI-native SaaS platform that transforms natural language into
 - **Self-Healing Code Engine**: Implements a recursive "Test-and-Repair" loop. If the generated code has bugs, the agent detects, analyzes, and fixes them autonomously before delivery.
 - **LangGraph Orchestration**: Uses stateful directed acyclic graphs (DAGs) to manage complex multi-step reasoning, ensuring high architectural consistency.
 - **Multi-Tenant Security**: Enterprise-ready architecture with JWT authentication and isolated user workspaces.
-- **Instant Full-Stack Scaffolding**: Generates React/Tailwind frontends and FastAPI backends with live previews in seconds.
+- **High-Fidelity Scaffolding**: Generates immersive single-page applications (Tailwind/Three.js/GSAP) and Python scripts with live previews in seconds.
 
 ---
 

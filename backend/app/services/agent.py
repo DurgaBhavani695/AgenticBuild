@@ -76,7 +76,7 @@ def analyzer_node(state: AgentState):
     prompt = ChatPromptTemplate.from_template(
         "You are a project feasibility analyzer. A user wants to build: '{description}'.\n"
         "System Constraints:\n"
-        "- Can generate single-page HTML/JS/CSS websites (using Tailwind/GSAP).\n"
+        "- Can generate single-page HTML/JS/CSS websites (using Tailwind, GSAP, and Three.js for 3D/Canvas rendering).\n"
         "- Can generate simple standalone Python scripts.\n"
         "- CANNOT generate multi-file backend systems, mobile apps, or complex 3D games.\n\n"
         "Respond STRICTLY in JSON:\n"
@@ -172,12 +172,16 @@ def architect_node(state: AgentState):
         context_str = f"\nThis is an UPDATE to an existing project. Existing files: {existing_files_list}"
 
     prompt = ChatPromptTemplate.from_template(
-        "You are a software architect. Based on the project name '{project_name}' and the user request: '{description}', "
-        "determine if this is a 'web' (HTML/JS) or 'python' project. {context_str}\n\n"
+        "You are a Senior Software Architect. Based on the project name '{project_name}' and the user request: '{description}', "
+        "analyze the requirements and determine the optimal project type.\n\n"
+        "GUIDELINES:\n"
+        "- Use 'web' for interactive UI, 3D visualizations, dashboards, or any visual application (HTML/JS/Tailwind/Three.js).\n"
+        "- Use 'python' for data processing, automation scripts, or CLI tools.\n"
+        "{context_str}\n\n"
         "Respond STRICTLY in JSON format:\n"
         "{{\n"
-        "  \"project_type\": \"web\",\n"
-        "  \"files\": [\"index.html\"]\n"
+        "  \"project_type\": \"web\" or \"python\",\n"
+        "  \"files\": [\"list\", \"of\", \"required\", \"files\"]\n"
         "}}"
     )
     chain = prompt | llm
@@ -229,6 +233,7 @@ def coder_node(state: AgentState):
         "- Generous whitespace/padding and responsive layouts.\n"
         "- Use polished typography (Inter, Poppins, etc. via Google Fonts).\n"
         "- Smooth GSAP animations for all entrance and interaction effects.\n"
+        "- For 3D visualizations or immersive canvas experiences, utilize Three.js (via CDN).\n"
         "- Ensure the UI fits perfectly within a standard browser viewport.\n\n"
         "### DATA & API REQUIREMENTS:\n"
         "- Use ONLY free, public APIs that do NOT require authentication or API keys (e.g., Open-Meteo for weather, REST Countries, etc.).\n"
@@ -239,7 +244,8 @@ def coder_node(state: AgentState):
         "{existing_context}{error_context}\n\n"
         "### OUTPUT FORMAT (CRITICAL):\n"
         "Respond ONLY with a valid JSON object. Do not include conversational filler.\n"
-        "Structure:\n"
+        "Each key must be a relative file path, and the value must be the string content of that file.\n"
+        "Example:\n"
         "{{\n"
         "  \"index.html\": \"...FULL HTML CODE...\",\n"
         "  \"summary\": \"Brief explanation of changes (NON-TECHNICAL, user-facing)\"\n"
