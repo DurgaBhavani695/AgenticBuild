@@ -84,9 +84,10 @@ async def chat_endpoint(
         last_message = result["messages"][-1]
         res_project_name = result.get("project_name")
         res_summary = result.get("summary", "")
+        generated_files = result.get("files", {})
         
         # 4. Save/Update Project
-        if request.mode == "project" and res_project_name:
+        if request.mode == "project" and res_project_name and generated_files:
             statement = select(Project).where(Project.name == res_project_name, Project.user_id == current_user.id)
             db_project = db.exec(statement).first()
             if not db_project:
@@ -109,22 +110,24 @@ async def chat_endpoint(
             db.commit()
             db.refresh(chat_sess)
             
+        final_response = res_summary if res_summary else last_message.content
         user_msg = ChatMessage(session_id=chat_sess.id, role="user", content=request.query)
-        ai_msg = ChatMessage(session_id=chat_sess.id, role="assistant", content=res_summary or last_message.content)
+        ai_msg = ChatMessage(session_id=chat_sess.id, role="assistant", content=final_response)
         db.add(user_msg)
         db.add(ai_msg)
         db.commit()
 
         preview_url = None
         final_project_name = res_project_name or project_name
-        if final_project_name:
+        # Only show preview if an index.html was actually written in this turn
+        if final_project_name and "index.html" in generated_files:
             preview_url = f"http://localhost:8000/view-projects/{final_project_name}/index.html"
             
         return ChatResponse(
-            response=res_summary or last_message.content,
+            response=final_response,
             session_id=chat_sess.id,
             project_name=final_project_name,
-            files=list(result.get("files", {}).keys()),
+            files=list(generated_files.keys()),
             preview_url=preview_url
         )
     except Exception as e:

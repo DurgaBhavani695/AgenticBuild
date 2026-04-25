@@ -93,8 +93,7 @@ def analyzer_node(state: AgentState):
         return {
             "is_feasible": data.get("is_feasible", True),
             "feasibility_reason": data.get("reason", ""),
-            "status": "Feasibility check complete.",
-            "summary": "Analyzed request feasibility."
+            "status": "Feasibility check complete."
         }
     
     return {
@@ -115,13 +114,21 @@ def chat_node(state: AgentState):
             "status": "Feasibility rejection returned."
         }
 
+    # If we reached chat_node but there's a validation error, it means retries were exhausted
+    validation_error = state.get("validation_error")
+    
     llm = get_llm()
     context = ""
     if state.get("existing_files"):
         context = "\n\nContext - Existing Project Files:\n" + "\n".join([f"--- {p} ---\n{c[:500]}..." for p, c in state["existing_files"].items()])
     
     messages = state["messages"]
-    if context:
+    
+    # If there's an error, inform the LLM so it can explain it
+    if validation_error:
+        error_msg = HumanMessage(content=f"System: The attempt to generate code for this project failed after multiple retries. Last error: {validation_error}. Please explain to the user that you had trouble generating valid code and suggest how they might simplify their request.")
+        messages = messages + [error_msg]
+    elif context:
         system_msg = HumanMessage(content=f"System: You are assisting with an existing project. Here is a summary of the current files for context (truncated if long):{context}")
         messages = [system_msg] + messages
 
