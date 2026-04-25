@@ -52,6 +52,18 @@ uv run python init_and_run.py
 
 ---
 
+## 🚧 Security Roadmap (TODO)
+To transition from a prototype to a production-hardened platform, the following security enhancements are prioritized:
+
+- [ ] **Prompt Injection Mitigation**: Implement advanced system-level scaffolding to detect and block adversarial queries designed to bypass agent constraints.
+- [ ] **Resource Damage Prevention**: Sandbox the agent's file-writing capabilities to prevent unauthorized modifications outside of designated project directories.
+- [ ] **Input/Output Sanitization**: Add a security layer to scrub sensitive data or PII from both user prompts and AI responses before they reach the UI or database.
+- [ ] **Bad Actor Detection**: Implement behavioral heuristics and rate-limiting to catch and block users attempting data theft or resource misuse.
+- [ ] **Secure Error Handling**: Refactor exception logic to ensure raw tracebacks or sensitive system information are never displayed to the end-user.
+- [ ] **Output Verification**: Add a final "Security Auditor" node in LangGraph to verify that generated code is safe and free of common vulnerabilities (XSS, SQLi).
+
+---
+
 ## 🏗️ Technical Stack
 - **Backend**: Python 3.14, FastAPI, SQLModel (SQLite), JWT
 - **AI Engine**: LangGraph, LangChain, Groq (OpenAI 120B / Llama 4 / Llama 3.3)
