@@ -20,9 +20,10 @@ def render_sidebar(api_client):
         # Model Selection
         model_options = {
             "OpenAI 120B (Groq)": "openai/gpt-oss-120b",
-            "Llama 3 70B (Groq)": "llama3-70b-8192",
-            "Llama 3 8B (Groq)": "llama3-8b-8192",
-            "Mixtral 8x7B (Groq)": "mixtral-8x7b-32768"
+            "OpenAI 20B (Groq)": "openai/gpt-oss-20b",
+            "Llama 3.3 70B (Groq)": "llama-3.3-70b-versatile",
+            "Llama 4 Scout 17B (Groq)": "meta-llama/llama-4-scout-17b-16e-instruct",
+            "Groq Compound": "groq/compound"
         }
         
         # Determine default index from backend config if not already set
