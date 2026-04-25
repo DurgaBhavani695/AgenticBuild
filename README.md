@@ -95,10 +95,11 @@ If you prefer to run the services separately:
 <br/>
 <div align="center">
   <a href="docs/assets/screenshots/screenshot-4.jpeg"><img src="docs/assets/screenshots/screenshot-4.jpeg" width="30%" alt="Weather App Detail"/></a>
-  <a href="docs/assets/screenshots/screenshot-5.jpeg"><img src="docs/assets/screenshots/screenshot-5.jpeg" width="30%" alt="Responsive View"/></a>
-  <a href="docs/assets/screenshots/screenshot-6.jpeg"><img src="docs/assets/screenshots/screenshot-6.jpeg" width="30%" alt="3D Logic"/></a>
+  <a href="docs/assets/screenshots/screenshot-8.jpeg"><img src="docs/assets/screenshots/screenshot-8.jpeg" width="30%" alt="Mobile Auth View"/></a>
+  <a href="docs/assets/screenshots/screenshot-9.jpeg"><img src="docs/assets/screenshots/screenshot-9.jpeg" width="30%" alt="Mobile Settings View"/></a>
 </div>
 <br/>
 <div align="center">
-  <a href="docs/assets/screenshots/screenshot-7.jpeg"><img src="docs/assets/screenshots/screenshot-7.jpeg" width="60%" alt="Product Showcase"/></a>
+  <a href="docs/assets/screenshots/screenshot-6.jpeg"><img src="docs/assets/screenshots/screenshot-6.jpeg" width="45%" alt="3D Logic"/></a>
+  <a href="docs/assets/screenshots/screenshot-7.jpeg"><img src="docs/assets/screenshots/screenshot-7.jpeg" width="45%" alt="Product Showcase"/></a>
 </div>
