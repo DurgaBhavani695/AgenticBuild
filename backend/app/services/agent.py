@@ -161,14 +161,18 @@ def namer_node(state: AgentState):
             break
             
     prompt = ChatPromptTemplate.from_template(
-        "Generate a creative, short (1-2 words), slug-friendly project name based on this description: {description}. "
-        "Respond with ONLY the project name, no punctuation or extra text."
+        "Generate a creative, unique, short (1-2 words), slug-friendly project name based on this description: {description}. "
+        "Avoid generic names. Respond with ONLY the project name, no punctuation or extra text."
     )
     chain = prompt | llm
     response = chain.invoke({"description": last_msg})
-    project_name = response.content.strip().lower().replace(" ", "-").replace("\"", "").replace("'", "")
+    # Clean the name and ensure it's a valid slug
+    project_name = re.sub(r'[^a-z0-9-]', '', response.content.strip().lower().replace(" ", "-"))
+    
     if not project_name:
-        project_name = "awesome-project"
+        import uuid
+        project_name = f"project-{uuid.uuid4().hex[:4]}"
+        
     return {
         "project_name": project_name,
         "status": f"Project named: {project_name}"

@@ -95,7 +95,7 @@ def render_sidebar(api_client):
                             st.session_state.messages = api_client.get_session_messages(sess["id"])
                             st.rerun()
                     with c2:
-                        if st.button("🗑️ Delete", key=f"del_{p_name}", use_container_width=True):
+                        if st.button("🗑️ Delete", key=f"del_proj_{sess['id']}", use_container_width=True):
                             if api_client.delete_project(p_name):
                                 if st.session_state.get("active_project") == p_name:
                                     st.session_state.active_project = None
