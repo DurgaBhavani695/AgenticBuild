@@ -1,7 +1,7 @@
 # Implementation Plan: V2 Project Scaffolder
 
 ## Objective
-Evolve practiceAI into a robust project scaffolder. The system will generate multi-file projects (React/Tailwind frontends and FastAPI backends), save them to a local workspace, and allow users to manage their project history via the Streamlit UI.
+Evolve AgenticBuild into a robust project scaffolder. The system will generate multi-file projects (React/Tailwind frontends and FastAPI backends), save them to a local workspace, and allow users to manage their project history via the Streamlit UI.
 
 ## Key Features
 *   **React + Tailwind Support:** Generate modern, component-based frontends.
