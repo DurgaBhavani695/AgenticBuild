@@ -51,15 +51,20 @@ async def chat_endpoint(
             if chat_sess.project:
                 project_name = chat_sess.project.name
             
-            # Fetch message history (Limit to last 10 messages for context efficiency)
-            msg_statement = select(ChatMessage).where(ChatMessage.session_id == chat_sess.id).order_by(desc(ChatMessage.created_at)).limit(10)
+            # Fetch message history (Limit to last 6 messages for extreme context efficiency)
+            msg_statement = select(ChatMessage).where(ChatMessage.session_id == chat_sess.id).order_by(desc(ChatMessage.created_at)).limit(6)
             prev_msgs = db.exec(msg_statement).all()
             # Reverse because we fetched them in desc order
             for m in reversed(prev_msgs):
+                content = m.content
+                # Truncate old massive AI code responses in history to save space
+                if m.role == "assistant" and len(content) > 2000:
+                    content = content[:2000] + "... [Old response truncated to save context space]"
+                
                 if m.role == "user":
-                    history.append(HumanMessage(content=m.content))
+                    history.append(HumanMessage(content=content))
                 else:
-                    history.append(AIMessage(content=m.content))
+                    history.append(AIMessage(content=content))
 
         if project_name:
             statement = select(Project).where(Project.name == project_name, Project.user_id == current_user.id)
@@ -70,7 +75,7 @@ async def chat_endpoint(
                 proj_path = os.path.join(PROJECTS_DIR, project_name)
                 if os.path.exists(proj_path):
                     total_chars = 0
-                    MAX_CHARS = 30000  # Safeguard total context size
+                    MAX_CHARS = 15000  # Lowered safeguard for total context size
                     for root, _, files in os.walk(proj_path):
                         for file in files:
                             if total_chars > MAX_CHARS: break
@@ -83,8 +88,8 @@ async def chat_endpoint(
                             with open(os.path.join(root, file), "r", encoding="utf-8") as f:
                                 content = f.read()
                                 # Truncate individual files if they are massive
-                                if len(content) > 10000:
-                                    content = content[:10000] + "... [TRUNCATED]"
+                                if len(content) > 5000:
+                                    content = content[:5000] + "... [TRUNCATED]"
                                 existing_files[rel_path] = content
                                 total_chars += len(content)
 
