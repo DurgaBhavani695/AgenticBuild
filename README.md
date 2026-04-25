@@ -92,6 +92,16 @@ To transition from a prototype to a production-hardened platform, the following 
 
 ---
 
+## 🛠️ Development Methodology
+AgenticBuild was developed adopting the new era of **AI-First Engineering**, leveraging autonomous agent orchestration to build an autonomous agent platform.
+
+- **Gemini CLI & Superpowers MCP**: This project was architected and stabilized using the Gemini CLI, utilizing the **Superpowers MCP** for deep codebase research and tool integration.
+- **Plan & Action Workflow**: The development followed a strict **Research -> Strategy (Plan Mode) -> Execution (Action Mode)** cycle. This ensured that complex refactors and new features were designed responsibly before a single line of code was modified.
+- **Human-AI Synergy**: While AI handled the heavy lifting of implementation and debugging, it required a **deep technical understanding** to direct the agents correctly, verify their output responsibly, and manage the architectural integrity of the system.
+- **The Modern Era**: This project serves as a testament to the transition from manual coding to **Agentic Orchestration**—a workflow that demands higher-level system design skills and a focus on responsible, secure AI usage.
+
+---
+
 ## 🏗️ Technical Stack
 - **Backend**: Python 3.14, FastAPI, SQLModel (SQLite), JWT
 - **AI Engine**: LangGraph, LangChain, Groq (OpenAI 120B / Llama 4 / Llama 3.3)
