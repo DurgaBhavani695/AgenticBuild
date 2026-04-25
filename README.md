@@ -1,55 +1,51 @@
 # AgenticBuild 🤖
 **Autonomous Full-Stack AI Engineer**
 
-AgenticBuild is an AI platform that builds web applications and scripts from natural language. It uses **Agentic Loops** to architect, write, and automatically fix code until it works.
-
----
-
-## 🖼️ Visual Gallery
-*Examples of the AgenticBuild workspace and applications built by the agent.*
-
-<div align="center">
-  <img src="docs/assets/screenshots/screenshot-1.jpeg" width="45%" alt="AgenticBuild Dashboard"/>
-  <img src="docs/assets/screenshots/screenshot-2.jpeg" width="45%" alt="AI Reasoning Process"/>
-</div>
-<div align="center">
-  <img src="docs/assets/screenshots/screenshot-3.jpeg" width="45%" alt="Generated Weather App - Overview"/>
-  <img src="docs/assets/screenshots/screenshot-4.jpeg" width="45%" alt="Generated Weather App - Detail"/>
-</div>
+AgenticBuild is an AI-native platform that transforms natural language into production-ready web applications. Unlike traditional "one-shot" generators, it uses **Agentic Loops** powered by LangGraph to architect, implement, and self-correct code until it works.
 
 ---
 
 ## ✨ Key Features
 
-### 🧠 Smart Building
-- **Self-Healing Code**: If the code has bugs, the agent detects and fixes them automatically before showing you the result.
-- **Incremental Updates**: You can add features or change styling on an existing project just by asking.
-- **Smart Fallback**: If a complex design is too large for the AI, it automatically switches to a robust single-file version so you always get a working app.
-- **Feasibility Check**: The agent analyzes your request first and suggests simpler alternatives if it hits a technical limit.
+### 🧠 Intelligent Orchestration
+- **Self-Healing Code Engine**: Implements a recursive "Test-and-Repair" loop. If the generated code has bugs or formatting issues, the agent detects, analyzes, and fixes them autonomously across multiple retries.
+- **LangGraph State Management**: Uses stateful directed acyclic graphs (DAGs) to manage complex multi-step reasoning, ensuring high architectural consistency.
+- **Smart Fallback Mechanism**: Automatically pivots from complex multi-file architectures to robust single-file applications if technical constraints (like token limits) are hit.
+- **Feasibility Analysis**: Pre-screens every request to ensure it stays within system capabilities, providing **💡 Suggested Alternatives** for non-feasible tasks.
 
-### 🛠️ Workspace & Tools
-- **Multiple Sessions**: Work on different projects at the same time without losing progress.
-- **Model Switching**: Easily switch between different AI models (Llama 4, OpenAI 120B, etc.) in the middle of a chat.
-- **ZIP Exports**: Download your completed projects as a ZIP file directly from the sidebar.
-- **Secure Access**: Private user accounts with JWT authentication to keep your projects isolated.
+### 🛠️ Advanced Project Management
+- **Incremental Updates**: Unlike one-shot generators, AgenticBuild understands your existing codebase. You can request updates, add features, or refactor existing projects through conversational dialogue.
+- **Multi-Session Workstreams**: Create and manage multiple concurrent project builds. Switch between different feature branches without losing progress.
+- **Dynamic Model Switching**: Hot-swap between different "AI brains" (OpenAI 120B, Llama 4 Scout, Llama 3.3, etc.) at runtime to balance speed, cost, and reasoning power.
+- **Native ZIP Exports**: Download your completed projects as ready-to-deploy archives directly from the sidebar.
+
+### 🛡️ Enterprise-Ready Core
+- **Multi-Tenant Security**: Built-in JWT authentication ensures that sessions, projects, and history are strictly isolated between users.
+- **Context Pruning**: High-efficiency history management and character capping allow the agent to handle large projects without hitting server request size limits.
+- **Glassmorphism UI**: A high-end, modern dashboard with blur effects, responsive layouts, and real-time build status tracking.
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Setup
+### 1. Setup Environment
 ```bash
+# Install uv (modern package manager)
 pip install uv
+
+# Sync dependencies
 uv sync
 ```
 
-### 2. Configuration
+### 2. Configure Credentials
 Create a `.env` file from `.env.example`:
 ```env
+LLM_PROVIDER=groq
 GROQ_API_KEY=your_key_here
+GROQ_MODEL_NAME=openai/gpt-oss-120b
 ```
 
-### 3. Run
+### 3. Launch AgenticBuild
 ```bash
 uv run python init_and_run.py
 ```
@@ -57,23 +53,52 @@ uv run python init_and_run.py
 ---
 
 ## 🛠️ Development Methodology
-Built using an **AI-First** approach:
-- **Tools**: Developed using Gemini CLI and Superpowers MCP for research and planning.
-- **Process**: Followed a "Design before Code" workflow to keep the architecture clean.
-- **Human Synergy**: AI handles the heavy implementation, while I focus on high-level system design and security.
+AgenticBuild was developed adopting the new era of **AI-First Engineering**, leveraging autonomous agent orchestration to build an autonomous agent platform.
+
+- **Gemini CLI & Superpowers MCP**: This project was architected and stabilized using the Gemini CLI, utilizing the **Superpowers MCP** for deep codebase research and tool integration.
+- **Plan & Action Workflow**: The development followed a strict **Research -> Strategy (Plan Mode) -> Execution (Action Mode)** cycle.
+- **The Modern Era**: This project serves as a testament to the transition from manual coding to **Agentic Orchestration**—a workflow that demands higher-level system design skills and a focus on responsible, secure AI usage.
 
 ---
 
 ## 🏗️ Technical Stack
-- **Backend**: Python 3.14, FastAPI, SQLModel (SQLite)
-- **AI Brain**: LangGraph, LangChain, Groq
-- **Frontend**: Streamlit, Tailwind CSS, GSAP
-- **Capabilities**: Single-Page Apps (Three.js/GSAP) and Python Scripts
+- **Backend**: Python 3.14, FastAPI, SQLModel (SQLite), JWT
+- **AI Engine**: LangGraph, LangChain, Groq (OpenAI 120B / Llama 4 / Llama 3.3)
+- **Frontend**: Streamlit, LocalStorage API, GSAP, Tailwind CSS
+- **Capabilities**: High-fidelity Single-Page Apps (Three.js/GSAP) and Standalone Scripts
+
+---
+
+## 🧹 Individual Execution
+If you prefer to run the services separately:
+- **Backend**: `uv run uvicorn backend.app.main:app --reload`
+- **Frontend**: `uv run streamlit run frontend/app.py`
 
 ---
 
 ## 🚧 Roadmap & Security (TODO)
-- [ ] **UI Polish**: Tighten up visual consistency and fix minor UI bugs.
-- [ ] **Prompt Security**: Add layers to prevent prompt injection and malicious usage.
-- [ ] **Sandboxing**: Run generated code in a safe, isolated environment.
-- [ ] **Code Auditing**: Automatically scan generated code for security vulnerabilities.
+- [ ] **UI Stabilization**: Tighten up visual consistency and refine Glassmorphism components.
+- [ ] **Filesystem Sandboxing**: Implement containerized sandboxing for the agent's file-writing capabilities.
+- [ ] **Adversarial Robustness**: Implement multi-layered scaffolding to detect and block complex prompt injection attacks.
+- [ ] **Security Auditing**: Integrate an automated auditor node to scan generated code for vulnerabilities.
+
+---
+
+## 🖼️ Visual Gallery
+*Click on any image to view in high resolution.*
+
+<div align="center">
+  <a href="docs/assets/screenshots/screenshot-1.jpeg"><img src="docs/assets/screenshots/screenshot-1.jpeg" width="30%" alt="Dashboard"/></a>
+  <a href="docs/assets/screenshots/screenshot-2.jpeg"><img src="docs/assets/screenshots/screenshot-2.jpeg" width="30%" alt="Reasoning"/></a>
+  <a href="docs/assets/screenshots/screenshot-3.jpeg"><img src="docs/assets/screenshots/screenshot-3.jpeg" width="30%" alt="Weather App Overview"/></a>
+</div>
+<br/>
+<div align="center">
+  <a href="docs/assets/screenshots/screenshot-4.jpeg"><img src="docs/assets/screenshots/screenshot-4.jpeg" width="30%" alt="Weather App Detail"/></a>
+  <a href="docs/assets/screenshots/screenshot-5.jpeg"><img src="docs/assets/screenshots/screenshot-5.jpeg" width="30%" alt="Responsive View"/></a>
+  <a href="docs/assets/screenshots/screenshot-6.jpeg"><img src="docs/assets/screenshots/screenshot-6.jpeg" width="30%" alt="3D Logic"/></a>
+</div>
+<br/>
+<div align="center">
+  <a href="docs/assets/screenshots/screenshot-7.jpeg"><img src="docs/assets/screenshots/screenshot-7.jpeg" width="60%" alt="Product Showcase"/></a>
+</div>
