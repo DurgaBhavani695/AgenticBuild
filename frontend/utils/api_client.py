@@ -67,8 +67,18 @@ class APIClient:
                 detail = f"Request failed (Status {response.status_code})"
             raise Exception(detail)
 
+    def _make_request(self, method, endpoint, **kwargs):
+        url = f"{self.base_url}{endpoint}"
+        try:
+            response = requests.request(method, url, headers=self._get_headers(), **kwargs)
+            return self._handle_response(response)
+        except requests.exceptions.ConnectionError:
+            st.error("🔌 **Backend Offline**: Could not connect to the AgenticBuild server. Please ensure the backend is running (port 8000).")
+            st.stop()
+        except Exception as e:
+            raise e
+
     def send_chat(self, query, mode, project_name=None, session_id=None, model_name=None):
-        url = f"{self.base_url}/api/chat"
         payload = {
             "query": query,
             "mode": mode,
@@ -76,58 +86,45 @@ class APIClient:
             "session_id": session_id,
             "model_name": model_name
         }
-        response = requests.post(url, json=payload, headers=self._get_headers())
-        return self._handle_response(response)
+        return self._make_request("POST", "/api/chat", json=payload)
 
     def get_sessions(self):
-        url = f"{self.base_url}/api/sessions"
-        response = requests.get(url, headers=self._get_headers())
-        if response.status_code == 200:
-            return response.json()
-        if response.status_code == 401:
-            st.session_state.token = None
-            st.rerun()
-        return []
+        try:
+            return self._make_request("GET", "/api/sessions")
+        except:
+            return []
 
     def get_session_messages(self, session_id):
-        url = f"{self.base_url}/api/sessions/{session_id}/messages"
-        response = requests.get(url, headers=self._get_headers())
-        if response.status_code == 200:
-            return response.json()
-        if response.status_code == 401:
-            st.session_state.token = None
-            st.rerun()
-        return []
+        try:
+            return self._make_request("GET", f"/api/sessions/{session_id}/messages")
+        except:
+            return []
 
     def get_projects(self):
-        url = f"{self.base_url}/api/projects"
-        response = requests.get(url, headers=self._get_headers())
-        if response.status_code == 200:
-            return response.json()
-        if response.status_code == 401:
-            st.session_state.token = None
-            st.rerun()
-        return []
+        try:
+            return self._make_request("GET", "/api/projects")
+        except:
+            return []
 
     def get_project_details(self, name):
-        url = f"{self.base_url}/api/projects/{name}"
-        response = requests.get(url, headers=self._get_headers())
-        if response.status_code == 200:
-            return response.json()
-        if response.status_code == 401:
-            st.session_state.token = None
-            st.rerun()
-        return None
+        try:
+            return self._make_request("GET", f"/api/projects/{name}")
+        except:
+            return None
 
     def get_download_url(self, name):
         return f"{self.base_url}/api/projects/{name}/download"
 
     def delete_project(self, name):
-        url = f"{self.base_url}/api/projects/{name}"
-        response = requests.delete(url, headers=self._get_headers())
-        return response.status_code == 200
+        try:
+            self._make_request("DELETE", f"/api/projects/{name}")
+            return True
+        except:
+            return False
 
     def delete_session(self, session_id):
-        url = f"{self.base_url}/api/sessions/{session_id}"
-        response = requests.delete(url, headers=self._get_headers())
-        return response.status_code == 200
+        try:
+            self._make_request("DELETE", f"/api/sessions/{session_id}")
+            return True
+        except:
+            return False
