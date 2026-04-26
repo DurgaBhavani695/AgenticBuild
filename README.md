@@ -8,6 +8,36 @@ AgenticBuild is an AI-native platform that transforms natural language into prod
 ## ✨ Key Features
 
 ### 🧠 Intelligent Orchestration
+AgenticBuild uses a stateful **Directed Acyclic Graph (DAG)** powered by **LangGraph** to manage the lifecycle of a request.
+
+```mermaid
+graph TD
+    START((START)) --> Mode{Mode Check}
+    Mode -- Chat --> Chat[Chat Node]
+    Mode -- Project --> Analyzer[Analyzer Node]
+    
+    Analyzer --> Feasible{Feasible?}
+    Feasible -- No --> Chat
+    Feasible -- Yes --> Namer[Namer Node]
+    
+    Namer --> Architect[Architect Node]
+    Architect --> Coder[Coder Node]
+    Coder --> Validator[Validator Node]
+    
+    Validator --> Result{Validation Result}
+    Result -- Success --> Writer[Writer Node]
+    Result -- Bug Found <br/> Retry < 5 --> Coder
+    Result -- Bug Found <br/> Retry >= 5 --> Chat
+    
+    Writer --> END((END))
+    Chat --> END
+    
+    style START fill:#0f172a,stroke:#38bdf8
+    style END fill:#0f172a,stroke:#38bdf8
+    style Coder fill:#1e293b,stroke:#38bdf8,stroke-width:2px
+    style Validator fill:#1e293b,stroke:#38bdf8,stroke-width:2px
+```
+
 - **Self-Healing Code Engine**: Implements a recursive "Test-and-Repair" loop. If the generated code has bugs or formatting issues, the agent detects, analyzes, and fixes them autonomously across multiple retries.
 - **LangGraph State Management**: Uses stateful directed acyclic graphs (DAGs) to manage complex multi-step reasoning, ensuring high architectural consistency.
 - **Smart Fallback Mechanism**: Automatically pivots from complex multi-file architectures to robust single-file applications if technical constraints (like token limits) are hit.
