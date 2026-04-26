@@ -16,16 +16,16 @@ graph TD
     START((START)) --> Mode{Mode Check}
     
     %% Main Branches
-    Mode -- "Chat Only" --> Chat[Chat Node]
-    Mode -- "Build Project" --> Analyzer[Analyzer Node]
+    Mode -->|"Chat Only"| Chat[Chat Node]
+    Mode -->|"Build Project"| Analyzer[Analyzer Node]
     
     %% Feasibility Gate
     Analyzer --> Feasible{Is it<br/>Feasible?}
-    Feasible -- "No" --> Chat
-    Feasible -- "Yes" --> Namer[Namer Node]
+    Feasible -->|No| Chat
+    Feasible -->|Yes| Namer[Namer Node]
     
-    %% Build Flow
-    subgraph "Agentic Loop"
+    %% Main Pipeline
+    subgraph "Autonomous Pipeline"
         Namer --> Architect[Architect Node]
         Architect --> Coder[Coder Node]
         Coder --> Validator[Validator Node]
@@ -33,9 +33,11 @@ graph TD
     
     %% Self-Healing Logic
     Validator --> Result{Result?}
-    Result -- "Success" --> Writer[Writer Node]
-    Result -- "Bug Found<br/>(Retry < 5)" --> Coder
-    Result -- "Bug Found<br/>(Retry >= 5)" --> Chat
+    
+    %% Routing Paths
+    Result -->|Success| Writer[Writer Node]
+    Result -->|"Bug Found (Retry < 5)"| Coder
+    Result -->|"Max Retries Exceeded"| Chat
     
     %% Endings
     Writer --> END((END))
