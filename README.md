@@ -8,34 +8,48 @@ AgenticBuild is an AI-native platform that transforms natural language into prod
 ## ✨ Key Features
 
 ### 🧠 Intelligent Orchestration
-AgenticBuild uses a stateful **Directed Acyclic Graph (DAG)** powered by **LangGraph** to manage the lifecycle of a request.
+AgenticBuild uses a stateful **Directed Acyclic Graph (DAG)** powered by **LangGraph** to manage the lifecycle of every request.
 
 ```mermaid
 graph TD
+    %% Entry Point
     START((START)) --> Mode{Mode Check}
-    Mode -- Chat --> Chat[Chat Node]
-    Mode -- Project --> Analyzer[Analyzer Node]
     
-    Analyzer --> Feasible{Feasible?}
-    Feasible -- No --> Chat
-    Feasible -- Yes --> Namer[Namer Node]
+    %% Main Branches
+    Mode -- "Chat Only" --> Chat[Chat Node]
+    Mode -- "Build Project" --> Analyzer[Analyzer Node]
     
-    Namer --> Architect[Architect Node]
-    Architect --> Coder[Coder Node]
-    Coder --> Validator[Validator Node]
+    %% Feasibility Gate
+    Analyzer --> Feasible{Is it<br/>Feasible?}
+    Feasible -- "No" --> Chat
+    Feasible -- "Yes" --> Namer[Namer Node]
     
-    Validator --> Result{Validation Result}
-    Result -- Success --> Writer[Writer Node]
-    Result -- Bug Found <br/> Retry < 5 --> Coder
-    Result -- Bug Found <br/> Retry >= 5 --> Chat
+    %% Build Flow
+    subgraph "Agentic Loop"
+        Namer --> Architect[Architect Node]
+        Architect --> Coder[Coder Node]
+        Coder --> Validator[Validator Node]
+    end
     
+    %% Self-Healing Logic
+    Validator --> Result{Result?}
+    Result -- "Success" --> Writer[Writer Node]
+    Result -- "Bug Found<br/>(Retry < 5)" --> Coder
+    Result -- "Bug Found<br/>(Retry >= 5)" --> Chat
+    
+    %% Endings
     Writer --> END((END))
     Chat --> END
     
-    style START fill:#0f172a,stroke:#38bdf8
-    style END fill:#0f172a,stroke:#38bdf8
-    style Coder fill:#1e293b,stroke:#38bdf8,stroke-width:2px
-    style Validator fill:#1e293b,stroke:#38bdf8,stroke-width:2px
+    %% Visual Styles
+    style START fill:#0f172a,stroke:#38bdf8,color:#fff
+    style END fill:#0f172a,stroke:#38bdf8,color:#fff
+    
+    classDef expertNode fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff
+    class Analyzer,Chat,Namer,Architect,Coder,Validator,Writer expertNode
+    
+    classDef decision fill:#0f172a,stroke:#38bdf8,stroke-dasharray: 5 5,color:#fff
+    class Mode,Feasible,Result decision
 ```
 
 - **Self-Healing Code Engine**: Implements a recursive "Test-and-Repair" loop. If the generated code has bugs or formatting issues, the agent detects, analyzes, and fixes them autonomously across multiple retries.
