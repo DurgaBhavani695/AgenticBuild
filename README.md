@@ -55,7 +55,7 @@ uv run python init_and_run.py
 ## 🛠️ Development Methodology
 AgenticBuild was developed adopting the new era of **AI-First Engineering**, leveraging autonomous agent orchestration to build an autonomous agent platform.
 
-- **Gemini CLI & Superpowers MCP**: This project was architected and stabilized using the Gemini CLI, utilizing the **Superpowers MCP** for deep codebase research and tool integration.
+- **Gemini CLI & Superpowers plugin**: This project was architected and stabilized using the Gemini CLI (leveraging the **Gemini 3.1 Pro** model), utilizing the **Superpowers plugin** for deep codebase research and tool integration.
 - **Plan & Action Workflow**: The development followed a strict **Research -> Strategy (Plan Mode) -> Execution (Action Mode)** cycle.
 - **The Modern Era**: This project serves as a testament to the transition from manual coding to **Agentic Orchestration**—a workflow that demands higher-level system design skills and a focus on responsible, secure AI usage.
 
